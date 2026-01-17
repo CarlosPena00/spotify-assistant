@@ -21,7 +21,7 @@ uv run pytest tests/test_file.py::test_name  # Run single test
 uv run ruff check .           # Lint
 uv run ruff check --fix .     # Lint with auto-fix
 uv run ruff format .          # Format code
-uv run mypy src/              # Type check
+uv run mypy spotify_assistant/  # Type check
 
 # Pre-commit hooks
 pre-commit run --all-files    # Run all hooks manually
@@ -30,18 +30,19 @@ pre-commit run --all-files    # Run all hooks manually
 ## Code Style
 
 - **Python 3.13+** required
-- **Type hints**: All `src/` code must have full type coverage
+- **Type hints**: All `spotify_assistant/` code must have full type coverage
 - **Modern syntax**: Use `str | None` (not `Optional`), `list` (not `List`), `dict` (not `Dict`)
 - **KISS**: Prefer pure functions and dataclasses over classes
-- **TypedDict**: Use for all structured data (API payloads, configs) — place in `src/<module>/models/`
+- **TypedDict**: Use for all structured data (API payloads, configs) — place in `spotify_assistant/models/`
 - **Pydantic BaseModel**: Use for FastStream/message broker schemas
 - **Forbidden**: `dict[str, Any]`, untyped `JSONResponse`
 - **Imports**: Single-line imports enforced by ruff isort
 
 ## Configuration
 
-- Settings defined in `src/settings.py` using Pydantic
+- Settings defined in `spotify_assistant/settings.py` using Pydantic
 - Environment values loaded from `.env`
+- **Secrets**: Always read secrets via `settings` object, never use `os.getenv()` directly
 
 ## Testing
 
