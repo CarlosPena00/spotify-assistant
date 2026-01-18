@@ -20,11 +20,11 @@ TRACK_PAIRS_HEADERS = [
 ]
 
 
-def _parse_bool(value: str) -> bool | None:
-    """Parse CSV string to bool. Empty string returns None."""
-    if value == "":
+def _parse_bool(value: str | None) -> bool | None:
+    """Parse CSV string to bool. Empty string or None returns None."""
+    if value is None or value == "":
         return None
-    return value.lower() == "true"
+    return value.lower() in ["true", "t", "1"]
 
 
 def _bool_to_csv(value: bool | None) -> str:
