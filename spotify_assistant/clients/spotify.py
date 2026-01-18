@@ -1,3 +1,5 @@
+from typing import Any
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
@@ -55,9 +57,9 @@ def search_track(track_name: str, artist: str) -> SpotifyTrack | None:
     )
 
 
-def add_tracks_to_playlist(playlist_id: str, track_uris: list[str]) -> None:
+def add_tracks_to_playlist(playlist_id: str, track_uris: list[str]) -> Any:
     """Add tracks to a Spotify playlist."""
     if not track_uris:
         return
     client = get_spotify_client()
-    client.playlist_add_items(playlist_id, track_uris)
+    return client.playlist_add_items(playlist_id, track_uris)
