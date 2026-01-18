@@ -13,7 +13,29 @@ TRACK_PAIRS_HEADERS = [
     "original_artist",
     "original_track",
     "added_at",
+    "source",
+    "brazilian_has_spotify",
+    "original_has_spotify",
 ]
+
+
+def _parse_bool(value: str) -> bool | None:
+    """Parse CSV string to bool. Empty string returns None."""
+    if value == "":
+        return None
+    return value.lower() == "true"
+
+
+def _bool_to_csv(value: bool | None) -> str:
+    """Convert bool to CSV string. None returns empty string."""
+    if value is None:
+        return ""
+    return "True" if value else "False"
+
+
+def _str_or_none(value: str) -> str | None:
+    """Convert empty string to None."""
+    return value if value else None
 
 
 def ensure_csv_exists(csv_path: Path) -> None:
@@ -44,15 +66,17 @@ def read_track_pairs(csv_path: Path) -> list[TrackPair]:
 
         rows: list[TrackPair] = []
         for row in reader:
-            rows.append(
-                TrackPair(
-                    brazilian_artist=row["brazilian_artist"],
-                    brazilian_track=row["brazilian_track"],
-                    original_artist=row["original_artist"],
-                    original_track=row["original_track"],
-                    added_at=row["added_at"],
-                )
+            track_pair = TrackPair(
+                brazilian_artist=row["brazilian_artist"],
+                brazilian_track=row["brazilian_track"],
+                original_artist=row["original_artist"],
+                original_track=row["original_track"],
+                added_at=_str_or_none(row["added_at"]),
+                source=_str_or_none(row["source"]),
+                brazilian_has_spotify=_parse_bool(row["brazilian_has_spotify"]),
+                original_has_spotify=_parse_bool(row["original_has_spotify"]),
             )
+            rows.append(track_pair)
         return rows
 
 
@@ -104,6 +128,9 @@ def append_track_pair(csv_path: Path, pair: TrackPair) -> TrackPair:
         original_artist=pair["original_artist"],
         original_track=pair["original_track"],
         added_at=added_at,
+        source=pair["source"],
+        brazilian_has_spotify=pair["brazilian_has_spotify"],
+        original_has_spotify=pair["original_has_spotify"],
     )
 
     with csv_path.open("a", newline="", encoding="utf-8") as f:
@@ -114,7 +141,10 @@ def append_track_pair(csv_path: Path, pair: TrackPair) -> TrackPair:
                 row["brazilian_track"],
                 row["original_artist"],
                 row["original_track"],
-                row["added_at"],
+                row["added_at"] or "",
+                row["source"] or "",
+                _bool_to_csv(row["brazilian_has_spotify"]),
+                _bool_to_csv(row["original_has_spotify"]),
             ]
         )
 

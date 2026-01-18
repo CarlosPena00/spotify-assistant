@@ -28,6 +28,10 @@ def sample_pair() -> TrackPair:
         brazilian_track="Xote dos Milagres",
         original_artist="Dominguinhos",
         original_track="Xote dos Milagres",
+        added_at=None,
+        source=None,
+        brazilian_has_spotify=None,
+        original_has_spotify=None,
     )
 
 
@@ -132,6 +136,9 @@ def test_find_duplicate_case_insensitive(sample_pair: TrackPair) -> None:
             original_artist="DOMINGUINHOS",
             original_track="XOTE DOS MILAGRES",
             added_at="2024-01-01T00:00:00Z",
+            source=None,
+            brazilian_has_spotify=None,
+            original_has_spotify=None,
         )
     ]
 
@@ -162,6 +169,10 @@ def test_validate_track_pair_rejects_empty_fields() -> None:
         brazilian_track="",
         original_artist="",
         original_track="",
+        added_at=None,
+        source=None,
+        brazilian_has_spotify=None,
+        original_has_spotify=None,
     )
 
     errors = validate_track_pair(pair)
@@ -180,6 +191,10 @@ def test_validate_track_pair_rejects_whitespace_only_fields() -> None:
         brazilian_track="\t",
         original_artist="\n",
         original_track="  \t  ",
+        added_at=None,
+        source=None,
+        brazilian_has_spotify=None,
+        original_has_spotify=None,
     )
 
     errors = validate_track_pair(pair)

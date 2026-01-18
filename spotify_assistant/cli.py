@@ -59,6 +59,10 @@ def populate_csv(
         brazilian_track=brazilian_track,
         original_artist=original_artist,
         original_track=original_track,
+        added_at=None,
+        source=None,
+        brazilian_has_spotify=None,
+        original_has_spotify=None,
     )
 
     if not _add_track_pair(pair):

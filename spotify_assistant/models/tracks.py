@@ -1,4 +1,3 @@
-from typing import NotRequired
 from typing import TypedDict
 
 
@@ -9,4 +8,7 @@ class TrackPair(TypedDict):
     brazilian_track: str
     original_artist: str
     original_track: str
-    added_at: NotRequired[str]  # ISO timestamp, set when saving to CSV
+    added_at: str | None  # ISO timestamp, set when saving to CSV
+    source: str | None  # URL source where the pair was found
+    brazilian_has_spotify: bool | None  # True, False, or None (not checked)
+    original_has_spotify: bool | None  # True, False, or None (not checked)
