@@ -36,6 +36,7 @@ for _, data in dataset.iterrows():
         f"{data.original_artist} - {data.original_track}"
     )
     if not pd.isna(data.brazilian_has_spotify):
+        new_dataset.append(data)
         continue
     result_brazilian = search_track(
         track_name=data.brazilian_track,
@@ -47,6 +48,7 @@ for _, data in dataset.iterrows():
         print("Not found on Spotify.")
         continue
     if not pd.isna(data.original_has_spotify):
+        new_dataset.append(data)
         continue
     result_original = search_track(
         track_name=data.original_track,
@@ -65,7 +67,6 @@ for _, data in dataset.iterrows():
     )
     data["in_playlist"] = result is not None
     new_dataset.append(data)
-    print(data)
     time.sleep(0.3)
 
 pd.DataFrame(new_dataset).to_csv(settings.track_pairs_path, index=False)
