@@ -8,8 +8,6 @@ from spotify_assistant.models.tracks import TrackPair
 from spotify_assistant.services.csv_manager import read_track_pairs
 from spotify_assistant.services.csv_manager import update_track_pair
 
-TARGET_PLAYLIST_ID = "5GPUwEgfNguHbfwODwtkw1"
-
 
 class ValidationResult(TypedDict):
     pair: TrackPair
