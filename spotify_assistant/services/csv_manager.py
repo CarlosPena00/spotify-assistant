@@ -153,3 +153,38 @@ def append_track_pair(csv_path: Path, pair: TrackPair) -> TrackPair:
         )
 
     return row
+
+
+def write_track_pairs(csv_path: Path, pairs: list[TrackPair]) -> None:
+    """Write all track pairs to CSV, overwriting existing content."""
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(TRACK_PAIRS_HEADERS)
+
+        for pair in pairs:
+            writer.writerow(
+                [
+                    pair["brazilian_artist"],
+                    pair["brazilian_track"],
+                    pair["original_artist"],
+                    pair["original_track"],
+                    pair["added_at"] or "",
+                    pair["source"] or "",
+                    _bool_to_csv(pair["brazilian_has_spotify"]),
+                    _bool_to_csv(pair["original_has_spotify"]),
+                    _bool_to_csv(pair["in_playlist"]),
+                ]
+            )
+
+
+def update_track_pair(csv_path: Path, index: int, pair: TrackPair) -> None:
+    """Update a track pair at specific index (reads all, updates one, rewrites)."""
+    pairs = read_track_pairs(csv_path)
+
+    if index < 0 or index >= len(pairs):
+        raise IndexError(f"Track pair index {index} out of range (0-{len(pairs) - 1})")
+
+    pairs[index] = pair
+    write_track_pairs(csv_path, pairs)

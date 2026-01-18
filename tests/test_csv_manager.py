@@ -11,7 +11,9 @@ from spotify_assistant.services.csv_manager import append_track_pair
 from spotify_assistant.services.csv_manager import ensure_csv_exists
 from spotify_assistant.services.csv_manager import find_duplicate
 from spotify_assistant.services.csv_manager import read_track_pairs
+from spotify_assistant.services.csv_manager import update_track_pair
 from spotify_assistant.services.csv_manager import validate_track_pair
+from spotify_assistant.services.csv_manager import write_track_pairs
 
 
 @pytest.fixture
@@ -204,3 +206,109 @@ def test_validate_track_pair_rejects_whitespace_only_fields() -> None:
     errors = validate_track_pair(pair)
 
     assert len(errors) == 4
+
+
+def test_write_track_pairs_overwrites_file(
+    csv_path: Path, sample_pair: TrackPair
+) -> None:
+    """Test that write_track_pairs overwrites existing file content."""
+    append_track_pair(csv_path, sample_pair)
+    assert len(read_track_pairs(csv_path)) == 1
+
+    write_track_pairs(csv_path, [])
+
+    assert read_track_pairs(csv_path) == []
+
+
+def test_write_track_pairs_writes_multiple_rows(csv_path: Path) -> None:
+    """Test that write_track_pairs writes multiple track pairs."""
+    pairs: list[TrackPair] = [
+        TrackPair(
+            brazilian_artist="Artist1",
+            brazilian_track="Track1",
+            original_artist="OrigArtist1",
+            original_track="OrigTrack1",
+            added_at="2024-01-01T00:00:00Z",
+            source=None,
+            brazilian_has_spotify=True,
+            original_has_spotify=False,
+            in_playlist=False,
+        ),
+        TrackPair(
+            brazilian_artist="Artist2",
+            brazilian_track="Track2",
+            original_artist="OrigArtist2",
+            original_track="OrigTrack2",
+            added_at="2024-01-02T00:00:00Z",
+            source="http://example.com",
+            brazilian_has_spotify=None,
+            original_has_spotify=None,
+            in_playlist=True,
+        ),
+    ]
+
+    write_track_pairs(csv_path, pairs)
+
+    result = read_track_pairs(csv_path)
+    assert len(result) == 2
+    assert result[0]["brazilian_artist"] == "Artist1"
+    assert result[0]["brazilian_has_spotify"] is True
+    assert result[0]["original_has_spotify"] is False
+    assert result[1]["brazilian_artist"] == "Artist2"
+    assert result[1]["in_playlist"] is True
+    assert result[1]["source"] == "http://example.com"
+
+
+def test_update_track_pair_modifies_single_row(
+    csv_path: Path, sample_pair: TrackPair
+) -> None:
+    """Test that update_track_pair modifies only the specified row."""
+    append_track_pair(csv_path, sample_pair)
+    second_pair = TrackPair(
+        brazilian_artist="Second Artist",
+        brazilian_track="Second Track",
+        original_artist="Second Original",
+        original_track="Second Original Track",
+        added_at=None,
+        source=None,
+        brazilian_has_spotify=None,
+        original_has_spotify=None,
+        in_playlist=False,
+    )
+    append_track_pair(csv_path, second_pair)
+
+    pairs = read_track_pairs(csv_path)
+    updated_pair = TrackPair(
+        brazilian_artist=pairs[0]["brazilian_artist"],
+        brazilian_track=pairs[0]["brazilian_track"],
+        original_artist=pairs[0]["original_artist"],
+        original_track=pairs[0]["original_track"],
+        added_at=pairs[0]["added_at"],
+        source=pairs[0]["source"],
+        brazilian_has_spotify=True,
+        original_has_spotify=False,
+        in_playlist=True,
+    )
+
+    update_track_pair(csv_path, 0, updated_pair)
+
+    result = read_track_pairs(csv_path)
+    assert len(result) == 2
+    assert result[0]["brazilian_has_spotify"] is True
+    assert result[0]["original_has_spotify"] is False
+    assert result[0]["in_playlist"] is True
+    assert result[1]["brazilian_artist"] == "Second Artist"
+    assert result[1]["in_playlist"] is False
+
+
+def test_update_track_pair_raises_for_invalid_index(
+    csv_path: Path, sample_pair: TrackPair
+) -> None:
+    """Test that update_track_pair raises IndexError for invalid index."""
+    append_track_pair(csv_path, sample_pair)
+
+    with pytest.raises(IndexError, match="Track pair index 5 out of range"):
+        update_track_pair(csv_path, 5, sample_pair)
+
+    with pytest.raises(IndexError, match="Track pair index -1 out of range"):
+        update_track_pair(csv_path, -1, sample_pair)
