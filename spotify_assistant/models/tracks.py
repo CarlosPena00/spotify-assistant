@@ -12,3 +12,4 @@ class TrackPair(TypedDict):
     source: str | None  # URL source where the pair was found
     brazilian_has_spotify: bool | None  # True, False, or None (not checked)
     original_has_spotify: bool | None  # True, False, or None (not checked)
+    in_playlist: bool  # True if added to playlist, False otherwise

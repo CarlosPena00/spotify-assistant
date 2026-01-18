@@ -32,6 +32,7 @@ def sample_pair() -> TrackPair:
         source=None,
         brazilian_has_spotify=None,
         original_has_spotify=None,
+        in_playlist=False,
     )
 
 
@@ -139,6 +140,7 @@ def test_find_duplicate_case_insensitive(sample_pair: TrackPair) -> None:
             source=None,
             brazilian_has_spotify=None,
             original_has_spotify=None,
+            in_playlist=False,
         )
     ]
 
@@ -173,6 +175,7 @@ def test_validate_track_pair_rejects_empty_fields() -> None:
         source=None,
         brazilian_has_spotify=None,
         original_has_spotify=None,
+        in_playlist=False,
     )
 
     errors = validate_track_pair(pair)
@@ -195,6 +198,7 @@ def test_validate_track_pair_rejects_whitespace_only_fields() -> None:
         source=None,
         brazilian_has_spotify=None,
         original_has_spotify=None,
+        in_playlist=False,
     )
 
     errors = validate_track_pair(pair)

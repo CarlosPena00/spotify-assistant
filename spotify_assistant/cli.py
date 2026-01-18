@@ -63,6 +63,7 @@ def populate_csv(
         source=None,
         brazilian_has_spotify=None,
         original_has_spotify=None,
+        in_playlist=False,
     )
 
     if not _add_track_pair(pair):

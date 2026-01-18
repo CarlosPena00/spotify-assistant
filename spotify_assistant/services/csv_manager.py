@@ -16,6 +16,7 @@ TRACK_PAIRS_HEADERS = [
     "source",
     "brazilian_has_spotify",
     "original_has_spotify",
+    "in_playlist",
 ]
 
 
@@ -75,6 +76,7 @@ def read_track_pairs(csv_path: Path) -> list[TrackPair]:
                 source=_str_or_none(row["source"]),
                 brazilian_has_spotify=_parse_bool(row["brazilian_has_spotify"]),
                 original_has_spotify=_parse_bool(row["original_has_spotify"]),
+                in_playlist=_parse_bool(row["in_playlist"]) or False,
             )
             rows.append(track_pair)
         return rows
@@ -131,6 +133,7 @@ def append_track_pair(csv_path: Path, pair: TrackPair) -> TrackPair:
         source=pair["source"],
         brazilian_has_spotify=pair["brazilian_has_spotify"],
         original_has_spotify=pair["original_has_spotify"],
+        in_playlist=False,
     )
 
     with csv_path.open("a", newline="", encoding="utf-8") as f:
@@ -145,6 +148,7 @@ def append_track_pair(csv_path: Path, pair: TrackPair) -> TrackPair:
                 row["source"] or "",
                 _bool_to_csv(row["brazilian_has_spotify"]),
                 _bool_to_csv(row["original_has_spotify"]),
+                _bool_to_csv(row["in_playlist"]),
             ]
         )
 
