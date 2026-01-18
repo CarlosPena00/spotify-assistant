@@ -1,5 +1,11 @@
 # Spotify API Reference
 
+## Target Playlist
+
+**Forró Inventou Tudo: O Resto é Cover**
+
+https://open.spotify.com/playlist/5GPUwEgfNguHbfwODwtkw1
+
 ## Search Track Response
 
 Response from `client.search(q=query, type="track", limit=1)`:
