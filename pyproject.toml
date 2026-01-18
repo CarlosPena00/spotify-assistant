@@ -1,19 +1,15 @@
 [project]
 name = "spotify-assistant"
 version = "0.1.0"
-description = "CLI tool for creating Spotify playlists with Brazilian Forró cover + original song pairs"
+description = "Tool for creating Spotify playlists with Brazilian Forró cover + original song pairs"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "spotipy>=2.24.0",
-    "typer>=0.15.0",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.7.0",
     "loguru>=0.7.3",
 ]
-
-[project.scripts]
-spotify-assistant = "spotify_assistant.cli:app"
 
 [project.optional-dependencies]
 dev = [
