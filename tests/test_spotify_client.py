@@ -3,8 +3,17 @@ from unittest.mock import patch
 
 import pytest
 
+import spotify_assistant.clients.spotify as spotify_module
 from spotify_assistant.clients.spotify import get_spotify_client
 from spotify_assistant.clients.spotify import search_track
+
+
+@pytest.fixture(autouse=True)
+def reset_spotify_client():
+    """Reset the cached Spotify client before each test."""
+    spotify_module._client = None
+    yield
+    spotify_module._client = None
 
 
 @pytest.fixture
@@ -98,23 +107,27 @@ def test_search_track_uses_first_result_when_multiple(
         assert result["id"] == "abc123"  # First result
 
 
-def test_get_spotify_client_uses_credentials() -> None:
-    """Test that get_spotify_client uses client credentials from settings."""
-    creds_path = "spotify_assistant.clients.spotify.SpotifyClientCredentials"
+def test_get_spotify_client_uses_oauth() -> None:
+    """Test that get_spotify_client uses OAuth from settings."""
+    oauth_path = "spotify_assistant.clients.spotify.SpotifyOAuth"
     spotify_path = "spotify_assistant.clients.spotify.spotipy.Spotify"
     settings_path = "spotify_assistant.clients.spotify.settings"
     with (
-        patch(creds_path) as mock_creds,
+        patch(oauth_path) as mock_oauth,
         patch(spotify_path) as mock_spotify,
         patch(settings_path) as mock_settings,
     ):
         mock_settings.SPOTIFY_CLIENT_ID = "test_client_id"
         mock_settings.SPOTIFY_CLIENT_SECRET = "test_client_secret"
+        mock_settings.SPOTIFY_REDIRECT_URI = "http://localhost:8888/callback"
 
         get_spotify_client()
 
-        mock_creds.assert_called_once_with(
+        mock_oauth.assert_called_once_with(
             client_id="test_client_id",
             client_secret="test_client_secret",
+            redirect_uri="http://localhost:8888/callback",
+            scope="playlist-modify-public playlist-modify-private",
+            cache_path=".cache",
         )
         mock_spotify.assert_called_once()
