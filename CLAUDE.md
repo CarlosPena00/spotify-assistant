@@ -4,9 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Spotify Assistant is a CLI tool for creating Spotify playlists with Brazilian Forró cover + original song pairs. It consists of two main flows:
+Spotify Assistant is a CLI tool for creating Spotify playlists with Brazilian cover + original song pairs. Currently supports **Forró** and **Brega** genres.
+
+### Supported Playlists
+
+| Genre | Playlist ID | Data File |
+|-------|-------------|-----------|
+| Forró | `5GPUwEgfNguHbfwODwtkw1` | `forro_pairs.csv` |
+| Brega | `6sJ94BPtTWlF9I2cxh0PTK` | `brega_pairs.csv` |
+
+### Main Flows
 1. **CSV Dataset Builder** — Manage a CSV with track pairs (brazilian artist/track + original artist/track)
 2. **Playlist Builder** — Read CSV → search Spotify → create playlist with pairs in order
+
+### Switching Playlists
+Set `TARGET_PLAYLIST_ID` and `TRACK_PAIRS_FILENAME` in `.env` to switch between genres.
 
 ## Commands
 
