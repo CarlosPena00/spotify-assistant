@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     SPOTIFY_REDIRECT_URI: str
 
     DATA_DIR: Path = Path("data")
-    TRACK_PAIRS_FILENAME: str = "track_pairs.csv"
+    TRACK_PAIRS_FILENAME: str  # "forro_pairs.csv"
     TARGET_PLAYLIST_ID: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
