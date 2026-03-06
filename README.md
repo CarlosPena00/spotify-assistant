@@ -1,6 +1,6 @@
 # Brazilian Cover Playlist Builder
 
-A Python tool that creates Spotify playlists pairing Brazilian music covers with their original international hits. Currently supports **Forró** and **Brega** genres.
+A Python tool that creates Spotify playlists pairing Brazilian music covers with their original international hits. Supports **Forró**, **Brega**, and **Não Entendi na 5ª Série** (comedy/double-entendre).
 
 ## The Playlists
 
@@ -45,45 +45,68 @@ This project automates the curation of these musical pairs, making it easy to di
 - The creative liberties taken in Portuguese adaptations
 - The breadth of genres covered: from Guns N' Roses to Britney Spears, Nirvana to Lady Gaga
 
+### Não Entendi na 5ª Série
+
+[![Spotify Playlist](https://img.shields.io/badge/Spotify-Comedy_Playlist-1DB954?style=for-the-badge&logo=spotify&logoColor=white)](https://open.spotify.com/playlist/4WiFm0EqBnmJbD7Pqs4nRU)
+
+**[Não Entendi na 5ª Série](https://open.spotify.com/playlist/4WiFm0EqBnmJbD7Pqs4nRU)**
+
+Brazilian comedy classics with double-entendre lyrics — the songs you sang as a kid without realizing what they actually meant. From Genival Lacerda's forró classics to Mamonas Assassinas' absurdist rock. Your brain is now officially off.
+
 ## Data Summary
 
-| Genre | Track Pairs | Data File | Sources |
-|-------|-------------|-----------|---------|
-| Forró | 72 pairs | `forro_pairs.csv` | Spotify playlists, iBahia, Jornal da Paraíba, Aratu On |
-| Brega | 31 pairs | `brega_pairs.csv` | Diário de Pernambuco, O Liberal, DOL |
+| Genre | Tracks | Data File | Flow |
+|-------|--------|-----------|------|
+| Forró | 72 pairs | `forro_pairs.csv` | cover + original |
+| Brega | 31 pairs | `brega_pairs.csv` | cover + original |
+| Comedy | — | `comedy_tracks.csv` | single track |
 
 ## How It Works
 
+**Cover playlists (Forró, Brega):**
 ```
-CSV Dataset (forro_pairs.csv / brega_pairs.csv)
-                    ↓
-               Load pairs
+CSV (forro_pairs.csv / brega_pairs.csv)
                     ↓
             Search Spotify API
              (cover + original)
                     ↓
-             Add to playlist
+         Add both tracks to playlist
                     ↓
             Update CSV status
 ```
 
-1. **Dataset Management**: Maintain a CSV of track pairs with metadata
-2. **Spotify Search**: Query the API for both the Brazilian cover and original
-3. **Playlist Building**: Add matched pairs sequentially to the target playlist
-4. **Status Tracking**: Mark which pairs were found and added
+**Comedy playlist:**
+```
+CSV (comedy_tracks.csv)
+                    ↓
+            Search Spotify API
+                    ↓
+          Add track to playlist
+                    ↓
+            Update CSV status
+```
+
+1. **Dataset Management**: Maintain a CSV of tracks/pairs with metadata
+2. **Spotify Search**: Query the API for each track
+3. **Playlist Building**: Add matched tracks sequentially to the target playlist
+4. **Status Tracking**: Mark which tracks were found and added
 
 ## Configuration
 
 Set environment variables in `.env` to switch between playlists:
 
 ```bash
-# Forró
+# Forró (cover + original pairs) → main.py
 TARGET_PLAYLIST_ID="5GPUwEgfNguHbfwODwtkw1"
 TRACK_PAIRS_FILENAME="forro_pairs.csv"
 
-# Brega
+# Brega (cover + original pairs) → main.py
 TARGET_PLAYLIST_ID="6sJ94BPtTWlF9I2cxh0PTK"
 TRACK_PAIRS_FILENAME="brega_pairs.csv"
+
+# Não Entendi na 5ª Série (single tracks) → main_comedy.py
+TARGET_PLAYLIST_ID="4WiFm0EqBnmJbD7Pqs4nRU"
+TRACK_PAIRS_FILENAME="comedy_tracks.csv"
 ```
 
 ## Tech Stack
@@ -104,8 +127,11 @@ uv sync
 cp .env.example .env
 # Add your Spotify API credentials
 
-# Run the playlist builder
+# Run the playlist builder (Forró / Brega)
 uv run python -m spotify_assistant.main
+
+# Run the comedy playlist builder
+uv run python -m spotify_assistant.main_comedy
 ```
 
 ## Development

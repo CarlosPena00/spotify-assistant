@@ -13,3 +13,14 @@ class TrackPair(TypedDict):
     brazilian_has_spotify: bool | None  # True, False, or None (not checked)
     original_has_spotify: bool | None  # True, False, or None (not checked)
     in_playlist: bool  # True if added to playlist, False otherwise
+
+
+class ComedyTrack(TypedDict):
+    """Single comedy/humor track entry (no pair — standalone song)."""
+
+    artist: str
+    track: str
+    added_at: str | None  # ISO timestamp, set when saving to CSV
+    source: str | None  # URL source where the track was found
+    has_spotify: bool | None  # True, False, or None (not checked)
+    in_playlist: bool  # True if added to playlist, False otherwise
